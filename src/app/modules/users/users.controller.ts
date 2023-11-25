@@ -1,10 +1,16 @@
 import { Request, Response} from "express";
 import { UserServices } from "./users.service";
+import { userValidationSchema } from "./user.validation";
 
+// post a user 
 const createUsers=async(req:Request,res:Response)=>{
   try {
+
     const {user:userData}=req.body
-    const result=await UserServices.createUsersIntoDB(userData);
+
+    const zodValidatedData= userValidationSchema.parse(userData)
+     
+    const result=await UserServices.createUsersIntoDB(zodValidatedData);
 
     res.status(200).json({
         success:true,
@@ -12,10 +18,17 @@ const createUsers=async(req:Request,res:Response)=>{
         data:result
 
     })
-  } catch (error) {
-    console.log(error);
+  } catch (error:any) {
+    res.status(500).json({
+        success:false,
+        message:"Something went wrong!",
+        error:error.issues
+
+    })
   }
 }
+
+// get all user 
 const getAllUsers=async(req:Request,res:Response)=>{
   try {
     
@@ -32,6 +45,7 @@ const getAllUsers=async(req:Request,res:Response)=>{
   }
 }
 
+// get a single user
 const getSingleUser=async(req:Request,res:Response)=>{
   try {
     const userId=req.params.userId;
