@@ -1,21 +1,34 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-export  const userValidationSchema = z.object({
-    userId: z.number().positive(),
-    username: z.string().min(6,{message:"Please use a username that has at least six characters"}), 
-    password: z.string().min(6,{message:"Please use a password that has at least six characters"}), 
-    fullName: z.object({
-      firstName: z.string().min(1).max(20, { message: "First name cannot be more than 20 characters" }),
-      lastName: z.string().min(1).max(20, { message: "Last name cannot be more than 20 characters" }),
-    }),
-    age: z.number().int().positive(),
-    email: z.string().email(),
-    isActive: z.boolean(),
-    hobbies: z.array(z.string()),
-    address: z.object({
-      street: z.string(),
-      city: z.string(),
-      country: z.string()
+const UserNameValidationSchema = z.object({
+  firstName: z.string({ required_error: "First name is required" }),
+  lastName: z.string({ required_error: "Last name is required" }),
+});
 
-    }),
-  })
+const UserAddressValidationSchema = z.object({
+  street: z.string({ required_error: "Street is required" }),
+  city: z.string({ required_error: "City is required" }),
+  country: z.string({ required_error: "Country is required" }),
+});
+
+const UserOrderValidationSchema = z.object({
+  productName: z.string({ required_error: "Product name is required" }),
+  price: z.number({ required_error: "Price is required" }),
+  quantity: z.number({ required_error: "Quantity is required" }),
+});
+
+export const UserValidationSchema = z.object({
+  userId: z.number({ required_error: "User ID is required" }),
+  username: z
+    .string({ required_error: "Username is required" })
+    .max(10, { message: "username character must be 2 character" }),
+  password: z.string({ required_error: "Password is required" }),
+  fullName: UserNameValidationSchema,
+  age: z.number({ required_error: "Age is required" }),
+  email: z.string({ required_error: "Email is required" }).email(),
+  isActive: z.boolean({ required_error: "isActive is required" }),
+  hobbies: z.array(z.string({ required_error: "Hobbies are required" })),
+  address: UserAddressValidationSchema,
+  orders: z.array(UserOrderValidationSchema).optional(),
+  isDeleted: z.boolean().default(false),
+});

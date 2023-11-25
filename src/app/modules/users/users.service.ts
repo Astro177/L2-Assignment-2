@@ -4,29 +4,24 @@ import { UserModel } from "./users.model";
 const createUsersIntoDB = async (userData: IUser) => {
   const user = new UserModel(userData);
 
-  // if(!user.isUserExist){
-  //     throw new Error({
-  //         "success": false,
-  //         "message": "User not found",
-  //         "error": {
-  //             "code": 404,
-  //             "description": "User not found!"
-  //         }
-  //     })
-  // }
-
   const result = await UserModel.create(userData);
 
   return result;
 };
 
 const getAllUsersFromDB = async () => {
-  const result = await UserModel.find();
+  const result = await UserModel.find(
+    {},
+    { username: 1, fullName: 1, age: 1, email: 1, address: 1 }
+  );
   return result;
 };
 
 const getSingleUserFromDB = async (id: any) => {
-  const result = await UserModel.findOne({ id: id });
+  const result = await UserModel.findOne(
+    { userId: id },
+    { password: 0, isDeleted: 0 }
+  );
   return result;
 };
 
