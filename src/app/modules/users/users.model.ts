@@ -1,88 +1,87 @@
 import { Schema, model } from "mongoose";
-import { IUser, UserMethods, UserModels } from "./users.interface";
+import { IUsers, UserModel } from "./users.interface";
 import bcrypt from "bcrypt";
 import config from "../../config";
 
-const usersSchema = new Schema<IUser, UserModels, UserMethods>({
+// User Schema Structure
+const userSchema = new Schema<IUsers>({
   userId: {
     type: Number,
-    required: [true, "User ID is Required"],
+    required: [true, "User ID is required"],
     unique: true,
     trim: true,
   },
   username: {
     type: String,
-    required: [true, "User Name is Required"],
+    required: [true, "Username is required"],
     unique: true,
     trim: true,
   },
   password: {
     type: String,
-    required: [true, "Password is Required"],
+    required: [true, "Password is required"],
     trim: true,
   },
   fullName: {
     firstName: {
       type: String,
-      required: [true, "First Name is Required"],
+      required: [true, "First name is required"],
       trim: true,
     },
     lastName: {
       type: String,
-      required: [true, "Last Name is Required"],
+      required: [true, "Last name is required"],
       trim: true,
     },
   },
-  age: { type: Number, required: [true, "Age is Required"], trim: true },
-  email: {
-    type: String,
-    required: [true, "Email is Required"],
-    unique: true,
-    trim: true,
-  },
+  age: { type: Number, required: [true, "Age is required"], trim: true },
+  email: { type: String, required: [true, "Email is required"], trim: true },
   isActive: {
     type: Boolean,
-    required: [true, "Active Status is Required"],
+    required: [true, "isActive is required"],
     trim: true,
   },
   hobbies: {
     type: [String],
-    required: [true, "Hobbies is Required"],
+    required: [true, "Hobbies are required"],
     trim: true,
   },
   address: {
     street: {
       type: String,
-      required: [true, "Street is Required"],
+      required: [true, "Street is required"],
       trim: true,
     },
-    city: { type: String, required: [true, "City is Required"], trim: true },
+    city: { type: String, required: [true, "City is required"], trim: true },
     country: {
       type: String,
-      required: [true, "Country is Required"],
+      required: [true, "Country is required"],
       trim: true,
     },
-    order: {
+  },
+  orders: [
+    {
       productName: {
         type: String,
-        required: [true, "Product Name is Required"],
+        required: [true, "Product name is required"],
         trim: true,
       },
       price: {
         type: Number,
-        required: [true, "Price is Required"],
+        required: [true, "Price is required"],
         trim: true,
       },
       quantity: {
         type: Number,
-        required: [true, "Quantity is Required"],
+        required: [true, "Quantity is required"],
         trim: true,
       },
     },
-  },
+  ],
 });
 
-usersSchema.pre("save", async function (next) {
+//middleware for password hashing
+userSchema.pre("save", async function (next) {
   const user = this;
   user.password = await bcrypt.hash(
     user.password,
@@ -91,14 +90,18 @@ usersSchema.pre("save", async function (next) {
   next();
 });
 
-usersSchema.post("save", function (doc, next) {
-  doc.password = "";
-  next();
-});
+//Delete password field
+userSchema.methods.toJSON = function () {
+  const Obj = this.toObject();
+  delete Obj.password;
+  return Obj;
+};
 
-usersSchema.methods.isUserExist = async function (id: number) {
-  const existingUser = await UserModel.findOne({ id });
+//Use static method
+userSchema.statics.isUserExists = async function (userId: number | string) {
+  const existingUser = await user.findOne({ userId });
   return existingUser;
 };
 
-export const UserModel = model<IUser, UserModels>("User", usersSchema);
+//Create model
+export const user = model<IUsers, UserModel>("user", userSchema);

@@ -1,34 +1,31 @@
-import { z } from "zod";
+import { z, string } from "zod";
 
-const UserNameValidationSchema = z.object({
-  firstName: z.string({ required_error: "First name is required" }),
-  lastName: z.string({ required_error: "Last name is required" }),
+const UserValidationSchema = z.object({
+  userId: z.number(),
+  username: z.string(),
+  password: z.string(),
+  fullName: z.object({
+    firstName: z.string(),
+    lastName: z.string(),
+  }),
+  age: z.number(),
+  email: z.string().email(),
+  isActive: z.boolean(),
+  hobbies: z.array(z.string()),
+  address: z.object({
+    street: z.string(),
+    city: string(),
+    country: string(),
+  }),
+  orders: z
+    .array(
+      z.object({
+        productName: z.string(),
+        price: z.number(),
+        quantity: z.number(),
+      })
+    )
+    .optional(),
 });
 
-const UserAddressValidationSchema = z.object({
-  street: z.string({ required_error: "Street is required" }),
-  city: z.string({ required_error: "City is required" }),
-  country: z.string({ required_error: "Country is required" }),
-});
-
-const UserOrderValidationSchema = z.object({
-  productName: z.string({ required_error: "Product name is required" }),
-  price: z.number({ required_error: "Price is required" }),
-  quantity: z.number({ required_error: "Quantity is required" }),
-});
-
-export const UserValidationSchema = z.object({
-  userId: z.number({ required_error: "User ID is required" }),
-  username: z
-    .string({ required_error: "Username is required" })
-    .max(10, { message: "username character must be 2 character" }),
-  password: z.string({ required_error: "Password is required" }),
-  fullName: UserNameValidationSchema,
-  age: z.number({ required_error: "Age is required" }),
-  email: z.string({ required_error: "Email is required" }).email(),
-  isActive: z.boolean({ required_error: "isActive is required" }),
-  hobbies: z.array(z.string({ required_error: "Hobbies are required" })),
-  address: UserAddressValidationSchema,
-  orders: z.array(UserOrderValidationSchema).optional(),
-  isDeleted: z.boolean().default(false),
-});
+export default UserValidationSchema;

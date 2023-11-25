@@ -1,34 +1,27 @@
-import { Model } from "mongoose"
-
-
-export interface IUser {
-    userId: number,
-    username: string,
-    password: string,
-    fullName: {
-        firstName: string,
-        lastName: string
-    },
-    age: number,
-    email: string,
-    isActive: boolean,
-    hobbies: Array<string>,
-    address: {
-        street: string,
-        city: string,
-        country: string
-    }
-    order?:{
-        productName: string
-        price: number
-        quantity: number
-      }
-    isDeleted:boolean
-  }
-export type UserMethods= {
-    isUserExist(id:number):Promise<IUser|null>
+import { Model } from "mongoose";
+export interface IUsers {
+  userId: number;
+  username: string;
+  password: string;
+  fullName: {
+    firstName: string;
+    lastName: string;
+  };
+  age: number;
+  email: string;
+  isActive: boolean;
+  hobbies: Array<string>;
+  address: {
+    street: string;
+    city: string;
+    country: string;
+  };
+  orders?: Array<{
+    productName: string;
+    price: number;
+    quantity: number;
+  }>;
 }
-
-export type UserModels=Model<IUser,Record<string,never>,UserMethods>
-
-
+export interface UserModel extends Model<IUsers> {
+  isUserExists(userId: number | string): Promise<IUsers> | null;
+}

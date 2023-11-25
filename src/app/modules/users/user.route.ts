@@ -1,13 +1,32 @@
-import express  from "express";
-import { UserControllers } from "./users.controller";
+import express from "express";
+import { userControllerData } from "./users.controller";
+const router = express.Router();
 
-const router=express.Router();
+//Create user
+router.post("/", userControllerData.createUserData);
 
-router.post("/",UserControllers.createUsers)
+//Get all user data
+router.get("/", userControllerData.getAllUserData);
 
-router.get("/",UserControllers.getAllUsers)
+//Get single user
+router.get("/:userId", userControllerData.getSingleUserData);
 
-router.get("/:userId",UserControllers.getSingleUser)
+//Update user router
+router.put("/:userId", userControllerData.updateUserData);
 
+//Delete user
+router.delete("/:userId", userControllerData.deleteUserData);
 
-export const UserRoutes=router
+//Insert order user collection
+router.put("/:userId/orders", userControllerData.insertOrderCollection);
+
+//Get user order Data
+router.get("/:userId/orders", userControllerData.getUserOrderData);
+
+//User order price calculate
+router.get(
+  "/:userId/orders/total-price",
+  userControllerData.CalculateAllUserOrder
+);
+//Export routes
+export const userRoutes = router;
