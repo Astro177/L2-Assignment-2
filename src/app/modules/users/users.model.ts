@@ -82,9 +82,8 @@ const userSchema = new Schema<IUsers>({
 
 //middleware for password hashing
 userSchema.pre("save", async function (next) {
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
+  this.password = await bcrypt.hash(
+    this.password,
     Number(config.bcrypt_sal_rounds)
   );
   next();
