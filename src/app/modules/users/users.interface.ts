@@ -1,4 +1,7 @@
-interface IUser {
+import { Model } from "mongoose"
+
+
+export interface IUser {
     userId: number,
     username: string,
     password: string,
@@ -15,6 +18,17 @@ interface IUser {
         city: string,
         country: string
     }
+    order?:{
+        productName: string
+        price: number
+        quantity: number
+      }
+    isDeleted:boolean
   }
+export type UserMethods= {
+    isUserExist(id:number):Promise<IUser|null>
+}
 
-  export default IUser
+export type UserModels=Model<IUser,Record<string,never>,UserMethods>
+
+

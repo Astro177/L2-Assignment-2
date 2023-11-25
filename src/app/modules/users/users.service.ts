@@ -1,24 +1,37 @@
-import IUser from "./users.interface";
+import { IUser } from "./users.interface";
 import { UserModel } from "./users.model";
 
-const createUsersIntoDB=async(user:IUser)=>{
-  const result=  await UserModel.create(user)
+const createUsersIntoDB = async (userData: IUser) => {
+  const user = new UserModel(userData);
 
-  return result
-}
+  // if(!user.isUserExist){
+  //     throw new Error({
+  //         "success": false,
+  //         "message": "User not found",
+  //         "error": {
+  //             "code": 404,
+  //             "description": "User not found!"
+  //         }
+  //     })
+  // }
 
-const getAllUsersFromDB = async()=>{
-    const result=await UserModel.find()
-    return result
-}
+  const result = await UserModel.create(userData);
 
-const getSingleUserFromDB = async(id:any)=>{
-    const result=await UserModel.findOne({id:id})
-    return result
-}
+  return result;
+};
 
-export const UserServices={
-    createUsersIntoDB,
-    getAllUsersFromDB,
-    getSingleUserFromDB
-}
+const getAllUsersFromDB = async () => {
+  const result = await UserModel.find();
+  return result;
+};
+
+const getSingleUserFromDB = async (id: any) => {
+  const result = await UserModel.findOne({ id: id });
+  return result;
+};
+
+export const UserServices = {
+  createUsersIntoDB,
+  getAllUsersFromDB,
+  getSingleUserFromDB,
+};
